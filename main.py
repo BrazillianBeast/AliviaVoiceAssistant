@@ -1,8 +1,15 @@
+import os
 import sys
 import threading
-
+import pygame
 import speech_recognition
 import pyttsx3 as tts
+from modules import actions
+# from transformers import AutoProcessor, BarkModel
+# from transformers import AutoProcessor, BarkModel
+
+# os.environ["SUNO_OFFLOAD_CPU"] = "True"
+# os.environ["SUNO_USE_SMALL_MODELS"] = "True"
 
 class Assistant:
     
@@ -10,6 +17,20 @@ class Assistant:
         self.recognizer = speech_recognition.Recognizer()
         self.speaker = tts.init()
         self.speaker.setProperty("rate", 200)
+        pygame.init()
+
+    # @abstractmethod
+    def wake_sound(self):
+        # Carrega o arquivo de áudio
+        pygame.mixer.music.load('./rise.mp3')
+        # Reproduz o áudio
+        pygame.mixer.music.play()
+        # Espera até que a música termine
+        pygame.time.delay(5000)
+        # Para a reprodução
+        pygame.mixer.music.stop()
+        # Finaliza o pygame
+        # pygame.quit()
 
         # self.assistant = GenericAssistant()
 
@@ -31,11 +52,29 @@ class Assistant:
                     # Reconhece o áudio usando o Google Speech Recognition
                     texto = self.recognizer.recognize_google(audio, language="pt-BR")
                     print(f"Você disse: {texto}")
-                    if 'oi' in texto.lower():
-                        self.speaker.say("Oi!, tudo bem!?")
+                    if 'lucy' in texto.lower():
+                        self.wake_sound()
+                        # self.speaker.say("Olá!, como posso te ajudar!?")
+                        # self.speaker.runAndWait()
+                        
+
+                    elif 'você pode me ajudar' in texto.lower():
+                        self.speaker.say("Você pode me perguntar como está a temperatura, ou me pedir para realizar alguma ação como abrir o youtube ou netflix!")
                         self.speaker.runAndWait()
 
+                    elif 'comida favorita' in texto.lower():
+                        self.speaker.say("Essa é uma pergunta difícil,mas eu gosto muito de sorvetes!?")
+                        self.speaker.runAndWait()
+
+                    elif 'youtube' in texto.lower():
+                        actions.open_youtube()
                     
+                    elif 'netflix' in texto.lower():
+                        actions.open_netflix()
+
+                    elif 'spotify' in texto.lower():
+                        actions.open_spotify()
+
                     if 'suas vozes' in texto.lower():
                         voices = self.speaker.getProperty('voices')
                         for voz in voices:
