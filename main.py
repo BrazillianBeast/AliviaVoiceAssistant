@@ -5,6 +5,7 @@ import pygame
 import speech_recognition
 import pyttsx3 as tts
 from modules import actions
+from modules import weather_forecast
 # from transformers import AutoProcessor, BarkModel
 # from transformers import AutoProcessor, BarkModel
 
@@ -26,7 +27,7 @@ class Assistant:
         # Reproduz o áudio
         pygame.mixer.music.play()
         # Espera até que a música termine
-        pygame.time.delay(5000)
+        pygame.time.delay(500)
         # Para a reprodução
         pygame.mixer.music.stop()
         # Finaliza o pygame
@@ -58,7 +59,7 @@ class Assistant:
                         # self.speaker.runAndWait()
                         
 
-                    elif 'você pode me ajudar' in texto.lower():
+                    if 'você pode me ajudar' in texto.lower():
                         self.speaker.say("Você pode me perguntar como está a temperatura, ou me pedir para realizar alguma ação como abrir o youtube ou netflix!")
                         self.speaker.runAndWait()
 
@@ -74,6 +75,11 @@ class Assistant:
 
                     elif 'spotify' in texto.lower():
                         actions.open_spotify()
+
+                    elif 'temperatura' in texto.lower():
+                        current_weather_string_answer = weather_forecast.get_weather()
+                        self.speaker.say(current_weather_string_answer)
+                        self.speaker.runAndWait()
 
                     if 'suas vozes' in texto.lower():
                         voices = self.speaker.getProperty('voices')
